@@ -7,19 +7,19 @@ class Attr {
     }
 
     public function print() {
-        switch(TRUE) {
-            case $this->name == 'checked':
-                print(' checked');
-                break;
-            case $this->name == 'selected':
-                print(' selected');
-                break;
-            default:
-                print(' ');
-                print($this->name);
-                print('="');
-                print($this->value);
-                print('"');
+        switch($this->name) {
+        case 'checked':
+            print(' checked');
+            break;
+        case 'selected':
+            print(' selected');
+            break;
+        default:
+            print(' ');
+            print($this->name);
+            print('="');
+            print($this->value);
+            print('"');
         }
     }
 }
@@ -62,6 +62,10 @@ class Tag extends Element {
         $this->children[] = $child;
     }
 
+    public function add_children(array $more_children) {
+        $this->children = array_merge($this->children, $more_children);
+    }
+    
     public function print_open() {
         print("<{$this->tag}");
         foreach($this->attrs as &$attr) {
@@ -87,8 +91,6 @@ class Tag extends Element {
     }
 }
 
-
-
 class TagNoBody extends Tag {
 
     public function __construct(string $tag, array $attrs=[], array $children=[]) {
@@ -107,7 +109,21 @@ class TagNoBody extends Tag {
 }
 
 function doctype() {
-    print("<!DOCTYPE html>\n<html lang=\"en\">\n");
+    print("<!DOCTYPE html>\n");
+}
+
+function html(array $attrs=[], array $children=[]) {
+    $haslang = false;
+    foreach($attrs as $attr) {
+        if($attr->name == 'lang') {
+            $haslang = true;
+            break;
+        }
+    }
+    if(!$haslang) {
+        $attrs[] = attr('lang', 'en');
+    }
+    return new Tag('html', $attrs, $children);
 }
 
 function css(string $href, string $rel="stylesheet", string $media="", string $title="") {
@@ -172,6 +188,11 @@ function img(string $src, string $alt, array $attrs=[], array $children=[]) {
 
 function nbsp() {
     return new Element('&nbsp;');
+}
+
+function iframe(string $src, array $attrs) {
+    $attrs[] = attr('src', $src);
+    return new Tag('iframe', $attrs);
 }
 
 ?>
