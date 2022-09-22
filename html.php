@@ -108,6 +108,10 @@ class TagNoBody extends Tag {
     }
 }
 
+function text($txt) {
+    return new Entitied($txt);
+}
+
 function doctype() {
     print("<!DOCTYPE html>\n");
 }
@@ -152,6 +156,14 @@ function h1(array $attrs=[], array $children=[]) {
 
 function table(array $attrs=[], array $children=[]) {
     return new Tag('table', $attrs, $children);
+}
+
+function thead(array $attrs=[], array $children=[]) {
+    return new Tag('thead', $attrs, $children);
+}
+
+function tbody(array $attrs=[], array $children=[]) {
+    return new Tag('tbody', $attrs, $children);
 }
 
 function tr(array $attrs=[], array $children=[]) {
