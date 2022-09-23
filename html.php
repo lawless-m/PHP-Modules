@@ -87,7 +87,13 @@ class Tag extends Element {
     public function print() {
         $this->print_open();
         $this->print_children();
-        $this->print_close();
+        switch($this->tag) {
+            case 'link';
+                break;
+            default:
+                $this->print_close();
+        }
+
     }
 }
 
