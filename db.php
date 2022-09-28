@@ -19,10 +19,24 @@ class PG {
     }
 
     protected function execute(string $stmt, array $params) {
+        $conversions = [];
         $res = pg_execute($this->conn, $stmt, $params);
         if($res) {
+            for($f = 0; $f < pg_num_fields($res); $f++) {
+                if(pg_field_type($res, $f) == 'numeric') {
+                    $conversions[] = function($v) { return floatval($v);};
+                } else {
+                    $conversions[] = function($v) { return $v;};
+                }
+            }
             $data = pg_fetch_all($res);
             if($data) {
+                $keys = array_keys($data[0]);
+                for($i = 0; $i < count($data); $i++) {
+                    for($c = 0; $c < count($conversions); $c++) {
+                        $data[$i][$keys[$c]] = $conversions[$c]($data[$i][$keys[$c]]);
+                    }
+                }
                 return [true, $data];
             }
             return [true, []];
