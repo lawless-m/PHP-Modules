@@ -58,11 +58,13 @@ class PG {
 
     protected function prepare($sql) {
         $hash = md5($sql);
-        if(!array_key_exists($hash, $this->statements)) {
-            pg_prepare($this->conn, $hash, $sql);
-            $this->statements[$hash] = $sql;
+        if(array_key_exists($hash, $this->statements)) {
+            return $hash;
         }
-        return $hash;
+        if(pg_prepare($this->conn, $hash, $sql)) {
+            $this->statements[$hash] = $sql;
+            return $hash;
+        }
     }
 
     protected function row_to_tree(&$tree, &$row, $levels) {
@@ -83,7 +85,7 @@ class PG {
 
     }
     
-    protected function execute_to_tree($stmt, $params, $levels) {
+    protected function execute_to_tree(string $stmt, array $params, array $levels) {
         $res = $this->execute($stmt, $params);
         if($res[0]) {
             $tree = [];
