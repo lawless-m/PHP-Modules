@@ -1,5 +1,13 @@
 <?php
 
+function asfloat($f) {
+    $f = floatval($f);
+    if(abs($f) < .01) {
+        $f = 0;
+    }
+    return $f;
+}
+
 class PG {
 
     protected $conn;
