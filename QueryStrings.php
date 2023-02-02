@@ -1,5 +1,7 @@
 <?php
 
+require_once 'arrays.php';
+
 function qs($key, $default=false) {
     return get($key, $_GET, $default);
 }
