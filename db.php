@@ -26,7 +26,7 @@ class PG {
         return [false, []];
     }
 
-    protected function execute(string $stmt, array $params) {
+    protected function execute(string $stmt, array $params = []) {
         $conversions = [];
         $res = pg_execute($this->conn, $stmt, $params);
         if($res) {
@@ -105,6 +105,15 @@ class PG {
         return $res;
     }
 
+    protected function tovector($result, $field) {
+        $vector = [];
+        if($result[0]) {
+            foreach ($result[1] as $row) {
+                array_push($vector, $row[$field]);
+            }
+        }
+        return $vector;
+    }
 }
 
 ?>
