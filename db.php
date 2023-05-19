@@ -1,5 +1,7 @@
 <?php
 
+require_once('lawless-m/dump.php');
+
 function asfloat($f) {
     $f = floatval($f);
     if(abs($f) < .01) {
@@ -26,9 +28,14 @@ class PG {
         return [false, []];
     }
 
-    protected function execute(string $stmt, array $params = []) {
+    protected function execute(string $stmt, array $params = [], $log_sql=false) {
         $conversions = [];
+        
         $res = pg_execute($this->conn, $stmt, $params);
+        if($log_sql) {
+            log_v($this->statements[$stmt]);
+            log_v($params);
+        }
         if($res) {
             for($f = 0; $f < pg_num_fields($res); $f++) {
                 if(pg_field_type($res, $f) == 'numeric') {
